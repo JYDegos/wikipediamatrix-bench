@@ -28,26 +28,32 @@ public class WikipediaHTMLExtractor {
 			int nbEntetes = entetes.size();
 			if (nbEntetes!=0) {
 				int k = 0;
+				String ligneCSV ="";
 				for (Element entete : entetes) {
 					k = k+1;
-					/* if(j==0 or j==73) {
-						System.out.println("Colonne "+k+" :\n");
-						System.out.println(colonne);
-					} */
+					ligneCSV = ligneCSV+entete.text();
+					if (k<nbEntetes) {
+						ligneCSV = ligneCSV + ";";
+					} else {
+						ligneCSV = ligneCSV + "\n";
+					}
 				}
-				System.out.println(nbEntetes+" entetes \n");
+				System.out.println("Ligne "+ j + " : " +ligneCSV);
 			} else {
 				Elements colonnes = ligne.select("td");
 				int nbColonnes = colonnes.size();
 				int k = 0;
+				String ligneCSV ="";
 				for (Element colonne : colonnes) {
 					k = k+1;
-					/* if(j==0 or j==73) {
-						System.out.println("Colonne "+k+" :\n");
-						System.out.println(colonne);
-					} */
+					ligneCSV = ligneCSV+colonne.text();
+					if (k<nbColonnes) {
+						ligneCSV = ligneCSV + ";";
+					} else {
+						ligneCSV = ligneCSV + "\n";
+					}
 				}
-				System.out.println(nbColonnes+" colonnes \n");
+				System.out.println("Ligne "+ j + " : " +ligneCSV);
 			}
 		}
 		return "Traite";
