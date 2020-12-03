@@ -24,17 +24,31 @@ public class WikipediaHTMLExtractor {
 		for(Element ligne : lignes) {
 			j = j + 1;
 			System.out.println("Ligne "+j+", ");
-			Elements colonnes = ligne.select("td");
-			int nbColonnes = colonnes.size();
-			int k = 0;
-			for (Element colonne : colonnes) {
-				k = k+1;
-				if(k==0 | k==73) {
-					System.out.println("Colonne "+k+" :\n");
-					System.out.println(colonne);
+			Elements entetes = ligne.select("th");
+			int nbEntetes = entetes.size();
+			if (nbEntetes!=0) {
+				int k = 0;
+				for (Element entete : entetes) {
+					k = k+1;
+					/* if(j==0 or j==73) {
+						System.out.println("Colonne "+k+" :\n");
+						System.out.println(colonne);
+					} */
 				}
+				System.out.println(nbEntetes+" entetes \n");
+			} else {
+				Elements colonnes = ligne.select("td");
+				int nbColonnes = colonnes.size();
+				int k = 0;
+				for (Element colonne : colonnes) {
+					k = k+1;
+					/* if(j==0 or j==73) {
+						System.out.println("Colonne "+k+" :\n");
+						System.out.println(colonne);
+					} */
+				}
+				System.out.println(nbColonnes+" colonnes \n");
 			}
-			System.out.println(nbColonnes+"\n");
 		}
 		return "Traite";
 	}
