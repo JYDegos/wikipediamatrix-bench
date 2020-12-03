@@ -6,8 +6,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.FileWriter;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import com.opencsv.CSVWriter;
+
 
 public class WikipediaHTMLExtractor {
 	
@@ -16,8 +21,60 @@ public class WikipediaHTMLExtractor {
 		return doc;
 	}
 	
+	public void writeToCSV(Element tableau, String filename) throws Exception {
+	    // Instantiating the CSVWriter class
+		CSVWriter writer = new CSVWriter(new FileWriter(filename));
+		Elements lignes = tableau.select("tr");
+		int nbLignes = lignes.size();
+		int j=0;
+		for(Element ligne : lignes) {
+			j = j + 1;
+			System.out.println("Ligne "+j+", ");
+			Elements entetes = ligne.select("th");
+			int nbEntetes = entetes.size();
+			String ligneActuelle[] = new String[nbEntetes];
+			if (nbEntetes!=0) {
+				int k = 0;
+				/* String ligneCSV =""; */
+				for (Element entete : entetes) {
+					/* k = k+1;
+					ligneCSV = ligneCSV+entete.text();
+					if (k<nbEntetes) {
+						ligneCSV = ligneCSV + ";";
+					} else {
+						ligneCSV = ligneCSV + "\n";
+					} */
+					ligneActuelle[k] = entete.text();
+					k=k+1;
+				}
+				writer.writeNext(ligneActuelle);
+				/* System.out.println("Ligne "+ j + " : " +ligneCSV); */
+			} else {
+				Elements colonnes = ligne.select("td");
+				int nbColonnes = colonnes.size();
+				int k = 0;
+				String ligneCourante[] = new String[nbColonnes];
+				/* String ligneCSV =""; */
+				for (Element colonne : colonnes) {
+					/* k = k+1;
+					ligneCSV = ligneCSV+colonne.text();
+					if (k<nbColonnes) {
+						ligneCSV = ligneCSV + ";";
+					} else {
+						ligneCSV = ligneCSV + "\n";
+					} */
+					ligneCourante[k] = colonne.text();
+					k=k+1;
+				}
+				writer.writeNext(ligneCourante);
+				/* System.out.println("Ligne "+ j + " : " +ligneCSV); */
+			}
+		}
+		//Flushing data from writer to file
+	    writer.flush();
+	}
+	
 	public String conversion(Element tableau) {
-		String chaine = "";
 		Elements lignes = tableau.select("tr");
 		int nbLignes = lignes.size();
 		int j=0;
@@ -124,6 +181,13 @@ public class WikipediaHTMLExtractor {
 		wiki.affichage(lesCSV);
 		
 		// Les transformer en fichiers
-
+		for(Element tab : lesTableaux) {
+			String filename="/home/jean-yves/Documents/Ensai/SortiesCSV/CSVtest.csv";
+			try {
+				wiki.writeToCSV(tab, filename);
+			} catch (Exception e) {
+				
+			}
+		}
 	}
 }
