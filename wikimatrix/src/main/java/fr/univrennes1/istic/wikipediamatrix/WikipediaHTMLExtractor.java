@@ -29,7 +29,7 @@ public class WikipediaHTMLExtractor {
 		int j=0;
 		for(Element ligne : lignes) {
 			j = j + 1;
-			System.out.println("Ligne "+j+", ");
+			// System.out.println("Ligne "+j+", ");
 			Elements entetes = ligne.select("th");
 			int nbEntetes = entetes.size();
 			String ligneActuelle[] = new String[nbEntetes];
@@ -80,7 +80,7 @@ public class WikipediaHTMLExtractor {
 		int j=0;
 		for(Element ligne : lignes) {
 			j = j + 1;
-			System.out.println("Ligne "+j+", ");
+			// System.out.println("Ligne "+j+", ");
 			Elements entetes = ligne.select("th");
 			int nbEntetes = entetes.size();
 			if (nbEntetes!=0) {
@@ -95,7 +95,7 @@ public class WikipediaHTMLExtractor {
 						ligneCSV = ligneCSV + "\n";
 					}
 				}
-				System.out.println("Ligne "+ j + " : " +ligneCSV);
+				// System.out.println("Ligne "+ j + " : " +ligneCSV);
 			} else {
 				Elements colonnes = ligne.select("td");
 				int nbColonnes = colonnes.size();
@@ -110,7 +110,7 @@ public class WikipediaHTMLExtractor {
 						ligneCSV = ligneCSV + "\n";
 					}
 				}
-				System.out.println("Ligne "+ j + " : " +ligneCSV);
+				// System.out.println("Ligne "+ j + " : " +ligneCSV);
 			}
 		}
 		return "Traite";
@@ -141,7 +141,7 @@ public class WikipediaHTMLExtractor {
 	
 	// Programme principal 
 	
-	public static void main (String args[]) throws IOException {
+	public static void extraction() throws IOException {
 		WikipediaHTMLExtractor wiki = new WikipediaHTMLExtractor();
 		
 		// Lecture d'un document HTML
@@ -153,7 +153,7 @@ public class WikipediaHTMLExtractor {
 	
 		Elements lesTableauxBruts = doc.select("table");
 		int nombreTableauxBruts = lesTableauxBruts.size();
-		System.out.println("Nombre de tableaux bruts " + nombreTableauxBruts);
+		// System.out.println("Nombre de tableaux bruts " + nombreTableauxBruts);
 		
 		// Récupération des tableaux corrects -> lesTableaux
 		
@@ -161,12 +161,12 @@ public class WikipediaHTMLExtractor {
 		for(int i=0; i<nombreTableauxBruts; i++) {
 			Element tab = lesTableauxBruts.get(i);
 			if (tab.className().equals("wikitable sortable")) {
-				System.out.println(i+ "\n");
+				// System.out.println(i+ "\n");
 				lesTableaux.add(tab);
 			} 
 		}
 		int nombreTableaux = lesTableaux.size();
-		System.out.println("Nombre de tableaux " + nombreTableaux);
+		// System.out.println("Nombre de tableaux " + nombreTableaux);
 		
 		// Il n'y en a qu'un : c'est fait pour.
 		
@@ -178,7 +178,7 @@ public class WikipediaHTMLExtractor {
 		
 		// Les transformer en fichiers
 		
-		wiki.affichage(lesCSV);
+		// wiki.affichage(lesCSV);
 		
 		// Les transformer en fichiers
 		for(Element tab : lesTableaux) {
@@ -189,5 +189,6 @@ public class WikipediaHTMLExtractor {
 				
 			}
 		}
+		
 	}
 }
