@@ -21,151 +21,130 @@ public class WikipediaHTMLExtractor {
 		return doc;
 	}
 	
-	public void writeToCSV(Element tableau, String filename) throws Exception {
+	public void writeToCSV(Element tabl, String filename) throws Exception {
 	    // Instantiating the CSVWriter class
 		CSVWriter writer = new CSVWriter(new FileWriter(filename));
-		Elements lignes = tableau.select("tr");
-		int nbLignes = lignes.size();
+		Elements rows = tabl.select("tr");
+		int nbRows = rows.size();
 		int j=0;
-		for(Element ligne : lignes) {
+		for(Element row : rows) {
 			j = j + 1;
-			// System.out.println("Ligne "+j+", ");
-			Elements entetes = ligne.select("th");
-			int nbEntetes = entetes.size();
-			String ligneActuelle[] = new String[nbEntetes];
-			if (nbEntetes!=0) {
+			Elements headers = row.select("th");
+			int nbHeaders = headers.size();
+			String currentRow[] = new String[nbHeaders];
+			if (nbHeaders!=0) {
 				int k = 0;
-				/* String ligneCSV =""; */
-				for (Element entete : entetes) {
-					/* k = k+1;
-					ligneCSV = ligneCSV+entete.text();
-					if (k<nbEntetes) {
-						ligneCSV = ligneCSV + ";";
-					} else {
-						ligneCSV = ligneCSV + "\n";
-					} */
-					ligneActuelle[k] = entete.text();
+				for (Element header : headers) {
+					currentRow[k] = header.text();
 					k=k+1;
 				}
-				writer.writeNext(ligneActuelle);
-				/* System.out.println("Ligne "+ j + " : " +ligneCSV); */
+				writer.writeNext(currentRow);
 			} else {
-				Elements colonnes = ligne.select("td");
-				int nbColonnes = colonnes.size();
+				Elements columns = row.select("td");
+				int nbColumns = columns.size();
 				int k = 0;
-				String ligneCourante[] = new String[nbColonnes];
-				/* String ligneCSV =""; */
-				for (Element colonne : colonnes) {
-					/* k = k+1;
-					ligneCSV = ligneCSV+colonne.text();
-					if (k<nbColonnes) {
-						ligneCSV = ligneCSV + ";";
-					} else {
-						ligneCSV = ligneCSV + "\n";
-					} */
-					ligneCourante[k] = colonne.text();
+				String currentRow2[] = new String[nbColumns];
+				for (Element column : columns) {
+					currentRow2[k] = column.text();
 					k=k+1;
 				}
-				writer.writeNext(ligneCourante);
-				/* System.out.println("Ligne "+ j + " : " +ligneCSV); */
+				writer.writeNext(currentRow2);
 			}
 		}
-		//Flushing data from writer to file
+		// Flushing data from writer to file
 	    writer.flush();
 	}
 	
-	public String conversion(Element tableau) {
-		Elements lignes = tableau.select("tr");
-		int nbLignes = lignes.size();
+	public String conversion(Element tabl) {
+		Elements rows = tabl.select("tr");
+		int nbRows = rows.size();
 		int j=0;
-		for(Element ligne : lignes) {
+		for(Element row : rows) {
 			j = j + 1;
-			// System.out.println("Ligne "+j+", ");
-			Elements entetes = ligne.select("th");
-			int nbEntetes = entetes.size();
-			if (nbEntetes!=0) {
+			Elements headers = row.select("th");
+			int nbHeaders = headers.size();
+			if (nbHeaders!=0) {
 				int k = 0;
-				String ligneCSV ="";
-				for (Element entete : entetes) {
+				String rowCSV ="";
+				for (Element header : headers) {
 					k = k+1;
-					ligneCSV = ligneCSV+entete.text();
-					if (k<nbEntetes) {
-						ligneCSV = ligneCSV + ";";
+					rowCSV = rowCSV+header.text();
+					if (k<nbHeaders) {
+						rowCSV = rowCSV + ";";
 					} else {
-						ligneCSV = ligneCSV + "\n";
+						rowCSV = rowCSV + "\n";
 					}
 				}
 				// System.out.println("Ligne "+ j + " : " +ligneCSV);
 			} else {
-				Elements colonnes = ligne.select("td");
-				int nbColonnes = colonnes.size();
+				Elements columns = row.select("td");
+				int nbColumns = columns.size();
 				int k = 0;
-				String ligneCSV ="";
-				for (Element colonne : colonnes) {
+				String rowCSV ="";
+				for (Element columun : columns) {
 					k = k+1;
-					ligneCSV = ligneCSV+colonne.text();
-					if (k<nbColonnes) {
-						ligneCSV = ligneCSV + ";";
+					rowCSV = rowCSV+columun.text();
+					if (k<nbColumns) {
+						rowCSV = rowCSV + ";";
 					} else {
-						ligneCSV = ligneCSV + "\n";
+						rowCSV = rowCSV + "\n";
 					}
 				}
-				// System.out.println("Ligne "+ j + " : " +ligneCSV);
 			}
 		}
-		return "Traite";
+		return "Done";
 	}
 	
-	public ArrayList<String> traitement(Elements tableaux) {
-		int nbTableaux = 0;
-	    int i= 0; // variables de boucles
+	public ArrayList<String> traitement(Elements tables) {
+		int nbTables = 0;
+	    int i= 0; // Loop variables
 		WikipediaHTMLExtractor wiki = new WikipediaHTMLExtractor();
-	    nbTableaux = tableaux.size(); // calcul du nb de tableaux
-	    ArrayList<String> lesCSV = new ArrayList<String>();
-	    for (i=0; i<nbTableaux; i++) {
-	    	Element unTableau = tableaux.get(i);
-	    	String unCSV = wiki.conversion(unTableau);
-	    	lesCSV.add(unCSV);
+	    nbTables = tables.size(); // computes the number of tables
+	    ArrayList<String> theCSVs = new ArrayList<String>();
+	    for (i=0; i<nbTables; i++) {
+	    	Element aTable = tables.get(i);
+	    	String aCSV = wiki.conversion(aTable);
+	    	theCSVs.add(aCSV);
 	    }
-	    return lesCSV;
+	    return theCSVs;
 	}
 	
-	public void affichage(ArrayList<String> lesChaines) {
-		int taille = lesChaines.size();
+	public void affichage(ArrayList<String> theStrings) {
+		int len = theStrings.size();
 		int i=0;
-		for (i=0; i<taille; i++) {
-			System.out.println(lesChaines.get(i));
+		for (i=0; i<len; i++) {
+			System.out.println(theStrings.get(i));
 		}
 		System.out.println("\n");
 	}
 	
-	// Programme principal 
+	// Principal program
 	
 	public static void extraction() throws IOException {
 		WikipediaHTMLExtractor wiki = new WikipediaHTMLExtractor();
 		
-		// Lecture d'un document HTML
+		// Reading an HTML document
 		
 		String url = "https://en.wikipedia.org/wiki/Comparison_of_digital_SLRs";
 		Document doc = wiki.getDocument(url);
 		
-		// Lecture des balises table
+		// Reading <table> tags
 	
-		Elements lesTableauxBruts = doc.select("table");
-		int nombreTableauxBruts = lesTableauxBruts.size();
+		Elements theRawTables = doc.select("table");
+		int nbRawTables = theRawTables.size();
 		// System.out.println("Nombre de tableaux bruts " + nombreTableauxBruts);
 		
 		// Récupération des tableaux corrects -> lesTableaux
 		
-		Elements lesTableaux = new Elements();
-		for(int i=0; i<nombreTableauxBruts; i++) {
-			Element tab = lesTableauxBruts.get(i);
+		Elements theTables = new Elements();
+		for(int i=0; i<nbRawTables; i++) {
+			Element tab = theRawTables.get(i);
 			if (tab.className().equals("wikitable sortable")) {
 				// System.out.println(i+ "\n");
-				lesTableaux.add(tab);
+				theTables.add(tab);
 			} 
 		}
-		int nombreTableaux = lesTableaux.size();
+		int nbTables = theTables.size();
 		// System.out.println("Nombre de tableaux " + nombreTableaux);
 		
 		// Il n'y en a qu'un : c'est fait pour.
@@ -174,14 +153,14 @@ public class WikipediaHTMLExtractor {
 		// i. e. récupérer un tableau de chaînes de caractères
 		// en partant de "lesTableaux"
 		
-		ArrayList<String> lesCSV = wiki.traitement(lesTableaux);
+		ArrayList<String> theCSVs = wiki.traitement(theTables);
 		
 		// Les transformer en fichiers
 		
 		// wiki.affichage(lesCSV);
 		
 		// Les transformer en fichiers
-		for(Element tab : lesTableaux) {
+		for(Element tab : theTables) {
 			String filename="/home/jean-yves/Documents/Ensai/SortiesCSV/CSVtest.csv";
 			try {
 				wiki.writeToCSV(tab, filename);
