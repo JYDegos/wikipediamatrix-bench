@@ -95,7 +95,7 @@ public class WikipediaHTMLExtractor {
 		return "Done";
 	}
 	
-	public ArrayList<String> traitement(Elements tables) {
+	public ArrayList<String> toStrings(Elements tables) {
 		int nbTables = 0;
 	    int i= 0; // Loop variables
 		WikipediaHTMLExtractor wiki = new WikipediaHTMLExtractor();
@@ -109,7 +109,7 @@ public class WikipediaHTMLExtractor {
 	    return theCSVs;
 	}
 	
-	public void affichage(ArrayList<String> theStrings) {
+	public void display(ArrayList<String> theStrings) {
 		int len = theStrings.size();
 		int i=0;
 		for (i=0; i<len; i++) {
@@ -120,21 +120,22 @@ public class WikipediaHTMLExtractor {
 	
 	// Principal program
 	
-	public static void extraction() throws IOException {
+	public static void extraction(String theURL) throws IOException {
 		WikipediaHTMLExtractor wiki = new WikipediaHTMLExtractor();
 		
 		// Reading an HTML document
 		
-		String url = "https://en.wikipedia.org/wiki/Comparison_of_digital_SLRs";
+		String url = theURL;
 		Document doc = wiki.getDocument(url);
 		
 		// Reading <table> tags
-	
 		Elements theRawTables = doc.select("table");
 		int nbRawTables = theRawTables.size();
-		// System.out.println("Nombre de tableaux bruts " + nombreTableauxBruts);
+		// theRawTables contain only HTML codes between <TABLE>...</TABLE>
+		// tags
 		
-		// Récupération des tableaux corrects -> lesTableaux
+		// theTables will contain 'wikitable sortable' tables
+		// from theRawTables
 		
 		Elements theTables = new Elements();
 		for(int i=0; i<nbRawTables; i++) {
@@ -145,20 +146,12 @@ public class WikipediaHTMLExtractor {
 			} 
 		}
 		int nbTables = theTables.size();
-		// System.out.println("Nombre de tableaux " + nombreTableaux);
 		
-		// Il n'y en a qu'un : c'est fait pour.
+		// Now we want to deal with theTables, i. e. to get
+		// tables of Strings from them
 		
-		// Maintenant, on veut traiter les bons tableaux,
-		// i. e. récupérer un tableau de chaînes de caractères
-		// en partant de "lesTableaux"
-		
-		ArrayList<String> theCSVs = wiki.traitement(theTables);
-		
-		// Les transformer en fichiers
-		
-		// wiki.affichage(lesCSV);
-		
+		ArrayList<String> theCSVs = wiki.toStrings(theTables);
+						
 		// Les transformer en fichiers
 		for(Element tab : theTables) {
 			String filename="/home/jean-yves/Documents/Ensai/SortiesCSV/CSVtest.csv";

@@ -12,7 +12,7 @@ public class WikipediaHTMLExtractorTest {
 
 	@Test
 	public void testHTMLExtractors() throws Exception {
-		fr.univrennes1.istic.wikipediamatrix.WikipediaHTMLExtractor.extraction();
+		fr.univrennes1.istic.wikipediamatrix.WikipediaHTMLExtractor.extraction("https://en.wikipedia.org/wiki/Comparison_of_digital_SLRs");
 		int[] rowsAndCols = fr.univrennes1.istic.wikipediamatrix.CSVReader.read();
 		assertTrue(rowsAndCols[0]==73 && rowsAndCols[1]==22);
 		System.out.println("Done.\n");
