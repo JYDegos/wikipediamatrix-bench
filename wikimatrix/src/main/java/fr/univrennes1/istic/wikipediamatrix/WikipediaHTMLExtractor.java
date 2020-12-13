@@ -21,7 +21,7 @@ public class WikipediaHTMLExtractor {
 		return doc;
 	}
 	
-	public void writeToCSV(Element tabl, String filename) throws Exception {
+	public static void writeToCSV(Element tabl, String filename) throws Exception {
 	    // Instantiating the CSVWriter class
 		CSVWriter writer = new CSVWriter(new FileWriter(filename));
 		Elements rows = tabl.select("tr");
@@ -95,7 +95,7 @@ public class WikipediaHTMLExtractor {
 		return "Done";
 	}
 	
-	public ArrayList<String> toStrings(Elements tables) {
+	public static ArrayList<String> toStrings(Elements tables) {
 		int nbTables = 0;
 	    int i= 0; // Loop variables
 		WikipediaHTMLExtractor wiki = new WikipediaHTMLExtractor();
@@ -118,16 +118,16 @@ public class WikipediaHTMLExtractor {
 		System.out.println("\n");
 	}
 	
-	// Principal program
+	// This method extracts tables form an URL
+	// and returns and array of tables.
 	
-	public static void extraction(String theURL) throws IOException {
+	public static Elements extraction(String theURL) throws IOException {
 		WikipediaHTMLExtractor wiki = new WikipediaHTMLExtractor();
 		
 		// Reading an HTML document
 		
 		String url = theURL;
 		Document doc = wiki.getDocument(url);
-		
 		// Reading <table> tags
 		Elements theRawTables = doc.select("table");
 		int nbRawTables = theRawTables.size();
@@ -141,26 +141,9 @@ public class WikipediaHTMLExtractor {
 		for(int i=0; i<nbRawTables; i++) {
 			Element tab = theRawTables.get(i);
 			if (tab.className().equals("wikitable sortable")) {
-				// System.out.println(i+ "\n");
 				theTables.add(tab);
 			} 
 		}
-		int nbTables = theTables.size();
-		
-		// Now we want to deal with theTables, i. e. to get
-		// tables of Strings from them
-		
-		ArrayList<String> theCSVs = wiki.toStrings(theTables);
-						
-		// Les transformer en fichiers
-		for(Element tab : theTables) {
-			String filename="/home/jean-yves/Documents/Ensai/SortiesCSV/CSVtest.csv";
-			try {
-				wiki.writeToCSV(tab, filename);
-			} catch (Exception e) {
-				
-			}
+		return theTables;
 		}
-		
-	}
 }
