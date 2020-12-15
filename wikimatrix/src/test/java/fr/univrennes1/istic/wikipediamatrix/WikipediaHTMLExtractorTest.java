@@ -3,6 +3,7 @@ package fr.univrennes1.istic.wikipediamatrix;
 import static org.junit.Assert.*;
 
 import org.hamcrest.core.IsEqual;
+import org.jsoup.select.Elements;
 import org.junit.Test;
 
 import fr.univrennes1.istic.wikipediamatrix.WikipediaHTMLExtractor;
@@ -22,8 +23,20 @@ public class WikipediaHTMLExtractorTest {
 	public void testHTMLExtractors2() throws Exception {
 		fr.univrennes1.istic.wikipediamatrix.WikipediaHTMLExtractor.extraction("https://en.wikipedia.org/wiki/Comparison_of_Axis_&_Allies_games");
 		assertTrue(1>0);
-		int[] rowsAndCols = fr.univrennes1.istic.wikipediamatrix.CSVReader.read();
 		System.out.println("Done.\n");
+	}
+	
+	@Test
+	public void testHTMLExtractors3() throws Exception {
+		fr.univrennes1.istic.wikipediamatrix.WikipediaHTMLExtractor.extraction("https://en.wikipedia.org/wiki/Comparison_of_United_States_presidential_candidates,_2008");
+		assertTrue(1>0);
+		System.out.println("Done.\n");
+	}
+	
+	@Test
+	public void testHTMLExtractors4() throws Exception {
+		Elements toto = new Elements();
+		assertTrue(toto==null);
 	}
 	
 }
