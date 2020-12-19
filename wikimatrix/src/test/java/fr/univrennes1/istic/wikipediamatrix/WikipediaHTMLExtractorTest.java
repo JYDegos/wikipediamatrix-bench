@@ -33,10 +33,4 @@ public class WikipediaHTMLExtractorTest {
 		System.out.println("Done.\n");
 	}
 	
-	@Test
-	public void testHTMLExtractors4() throws Exception {
-		Elements toto = new Elements();
-		assertTrue(toto==null);
-	}
-	
 }

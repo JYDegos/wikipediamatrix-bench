@@ -152,7 +152,8 @@ public class WikipediaHTMLExtractor {
 			}
 			return theTables;
 		} catch (Exception e) {
-			System.out.println("\nCette url n'est pas accessible. Le traitement va l'ignorer et se poursuivre.");
+			System.out.println("CAUTION: This URL Can not be reached. The program will ignore it and go on.");
+			
 			return new Elements();
 		}
 	}

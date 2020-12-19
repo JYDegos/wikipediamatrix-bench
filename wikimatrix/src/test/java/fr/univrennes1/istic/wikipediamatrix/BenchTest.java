@@ -36,7 +36,7 @@ public class BenchTest {
 		int nurl = 0;
 		while ((url = br.readLine()) != null) {
 			// Test
-			System.out.println("Page " + nurl + "\n");
+			System.out.println("Scanning page number " + (nurl + 1));
 			String wurl = BASE_WIKIPEDIA_URL + url;
 			System.out.println("Wikipedia url: " + wurl);
 			// TODO: do something with the Wikipedia URL
@@ -44,7 +44,7 @@ public class BenchTest {
 			Elements theTables = WikipediaHTMLExtractor.extraction(wurl);
 			// computes the number of tables in the URL
 			int nbTables = theTables.size();
-			System.out.println(nbTables+"\n");
+			System.out.println("Number of detected tables : " + nbTables+"\n");
 			// converts the tables to an array of Strings
 			ArrayList<String> theCSVs = WikipediaHTMLExtractor.toStrings(theTables);
 
