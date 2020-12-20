@@ -16,112 +16,55 @@ import com.opencsv.CSVWriter;
 
 public class WikipediaHTMLExtractor {
 
-	public int getStatus(String url) throws IOException {
-		Connection.Response response = Jsoup.connect(url).execute();
-		int statusCode = response.statusCode();
-		return statusCode;
-	}
-
 	public Document getDocument(String url) throws IOException {
 		Document doc = Jsoup.connect(url).get();
 		return doc;
 	}
 
-	public static void writeToCSV(Element tabl, String filename) throws Exception {
+	public static Table writeToCSV(int theIdURL, int theIdTable, Element tabl, String filename) throws Exception {
 		// Instantiating the CSVWriter class
 		CSVWriter writer = new CSVWriter(new FileWriter(filename));
+		Table theTable = new Table();
+		theTable.idURL = theIdURL;
+		theTable.idTable = theIdTable;
 		Elements rows = tabl.select("tr");
 		int nbRows = rows.size();
+		theTable.nbRows = nbRows;
+		theTable.nbCells = 0;
 		int j = 0;
 		for (Element row : rows) {
 			j = j + 1;
 			Elements headers = row.select("th");
 			int nbHeaders = headers.size();
+			theTable.nbHeaders = 0;
 			String currentRow[] = new String[nbHeaders];
 			if (nbHeaders != 0) {
+				theTable.nbHeaders++;
 				int k = 0;
 				for (Element header : headers) {
 					currentRow[k] = header.text();
 					k = k + 1;
+					theTable.nbCells++;
 				}
 				writer.writeNext(currentRow);
 			} else {
 				Elements columns = row.select("td");
 				int nbColumns = columns.size();
+				theTable.nbColumns = nbColumns;
 				int k = 0;
 				String currentRow2[] = new String[nbColumns];
 				for (Element column : columns) {
 					currentRow2[k] = column.text();
 					k = k + 1;
+					theTable.nbCells++;
 				}
 				writer.writeNext(currentRow2);
 			}
 		}
 		// Flushing data from writer to file
 		writer.flush();
-	}
-
-	public String conversion(Element tabl) {
-		Elements rows = tabl.select("tr");
-		int nbRows = rows.size();
-		int j = 0;
-		for (Element row : rows) {
-			j = j + 1;
-			Elements headers = row.select("th");
-			int nbHeaders = headers.size();
-			if (nbHeaders != 0) {
-				int k = 0;
-				String rowCSV = "";
-				for (Element header : headers) {
-					k = k + 1;
-					rowCSV = rowCSV + header.text();
-					if (k < nbHeaders) {
-						rowCSV = rowCSV + ";";
-					} else {
-						rowCSV = rowCSV + "\n";
-					}
-				}
-				// System.out.println("Ligne "+ j + " : " +ligneCSV);
-			} else {
-				Elements columns = row.select("td");
-				int nbColumns = columns.size();
-				int k = 0;
-				String rowCSV = "";
-				for (Element columun : columns) {
-					k = k + 1;
-					rowCSV = rowCSV + columun.text();
-					if (k < nbColumns) {
-						rowCSV = rowCSV + ";";
-					} else {
-						rowCSV = rowCSV + "\n";
-					}
-				}
-			}
-		}
-		return "Done";
-	}
-
-	public static ArrayList<String> toStrings(Elements tables) {
-		int nbTables = 0;
-		int i = 0; // Loop variables
-		WikipediaHTMLExtractor wiki = new WikipediaHTMLExtractor();
-		nbTables = tables.size(); // computes the number of tables
-		ArrayList<String> theCSVs = new ArrayList<String>();
-		for (i = 0; i < nbTables; i++) {
-			Element aTable = tables.get(i);
-			String aCSV = wiki.conversion(aTable);
-			theCSVs.add(aCSV);
-		}
-		return theCSVs;
-	}
-
-	public void display(ArrayList<String> theStrings) {
-		int len = theStrings.size();
-		int i = 0;
-		for (i = 0; i < len; i++) {
-			System.out.println(theStrings.get(i));
-		}
-		System.out.println("\n");
+		writer.close();
+		return theTable;
 	}
 
 	// This method extracts tables form an URL
@@ -144,15 +87,21 @@ public class WikipediaHTMLExtractor {
 			// from theRawTables
 
 			Elements theTables = new Elements();
+			
 			for (int i = 0; i < nbRawTables; i++) {
 				Element tab = theRawTables.get(i);
-				if (tab.className().equals("wikitable sortable")) {
+				// We want to ignore the tables containing 'rowspan'
+				// or 'colspan' attributes in 'td' or 'tr' tags
+				boolean tabWithouCS = tab.select("td[colspan]").size()==0;
+				boolean tabWithouRS = tab.select("tr[rowspan]").size()==0;
+				if (tab.className().equals("wikitable sortable") && tabWithouCS && tabWithouRS) {
 					theTables.add(tab);
 				}
 			}
+
 			return theTables;
 		} catch (Exception e) {
-			System.out.println("CAUTION: This URL Can not be reached. The program will ignore it and go on.");
+			System.out.println("CAUTION: This URL could not be reached. The program will ignore it and go on.");
 			
 			return new Elements();
 		}
